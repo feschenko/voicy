@@ -15,5 +15,3 @@ jobs:
         with:
           python-version: 3.8
       - uses: psf/black@stable
-        with:
-          black_args: ". --check"
