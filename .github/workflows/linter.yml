@@ -1,5 +1,7 @@
-name: Automated linter
+name: Pull request linter
+
 on: [pull_request]
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -9,17 +11,17 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - name: Install Black.
+      - name: Install black.
         run: pip install black
       - name: Run black
         run: black --check .
-      - name: Сommit black changes to the pull request on failure.
+      - name: Commit changes, made by black in the pull request on failure.
         if: failure()
         run: |
           black .
           git config --global user.name "autoblack"
-          git config --global user.email "xcaq@users.noreply.github.com"
+          git config --global user.email "commit-helper@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git checkout $GITHUB_HEAD_REF
-          git commit -am "Autoformat code with Black"
+          git commit -am "Autoformat code with black."
           git push
