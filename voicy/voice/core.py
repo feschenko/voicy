@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from base64 import b64decode
 from ..http import Request
 from random import choice
-from typing import Union
+from typing import Optional
 
 
 class MaxLengthError(Exception):
@@ -67,7 +67,7 @@ class Voice:
 
 class Token:
     @staticmethod
-    def get_token(rucaptcha_key: str) -> Union[str, None]:
+    def get_token(rucaptcha_key: str) -> Optional[str]:
         """
         Does a http to the client, solve a captcha and return a token.
         :param rucaptcha_key: Rucaptcha API key.
