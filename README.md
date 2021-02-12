@@ -25,7 +25,7 @@
 
 <details>
   <summary>Browser option</summary>
-    <p>Sorry, currently this part is not written, please come back later or make a pull request.</p>
+    <p>Sorry, currently this part is not written, please come back later or make a pull request with the guide.</p>
 </details>
 
 ## Usage example:

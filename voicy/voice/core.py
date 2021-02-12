@@ -9,16 +9,19 @@ from typing import Optional
 
 class MaxLengthError(Exception):
     """Throws when text length is more than 4600 characters."""
+
     pass
 
 
 class BadTokenError(Exception):
     """Throws when the client does not accept a token."""
+
     pass
 
 
 class File(BaseModel):
     """This object represents an audio file. Contains a path and file format."""
+
     path: str
     format: str
 
@@ -31,8 +34,15 @@ class Voice:
         self.request = Request()
         self.token = token
 
-    def tts(self, text: str, voice: str = "1", rate: float = 1, pitch: float = 0, path: str = "", format: str = "wav"
-            ) -> File:
+    def tts(
+        self,
+        text: str,
+        voice: str = "1",
+        rate: float = 1,
+        pitch: float = 0,
+        path: str = "",
+        format: str = "wav",
+    ) -> File:
         """
         Does a http to the client with the token, that provided in init. After does TTS and returns the path to file.
         :param text: Text with length no more than 4600 characters.
@@ -45,17 +55,35 @@ class Voice:
         """
         if len(text) > 4600:
             raise MaxLengthError("Max text length is 4600 characters.")
-        voices = {"1": "ru-RU-Wavenet-A", "2": "ru-RU-Wavenet-B", "3": "ru-RU-Wavenet-C",
-                  "4": "ru-RU-Wavenet-D", "5": "ru-RU-Wavenet-E"}
-        response = Request.make("POST", "https://cxl-services.appspot.com/proxy",
-                                params={"url": "https://texttospeech.googleapis.com/v1beta1/text:synthesize",
-                                        "token": self.token},
-                                json={"input": {"text": text}, "voice": {"languageCode": "ru-RU", "name": voices[voice]},
-                                      "audioConfig": {"audioEncoding": "LINEAR16", "pitch": pitch,
-                                                      "speakingRate": rate}})
+        voices = {
+            "1": "ru-RU-Wavenet-A",
+            "2": "ru-RU-Wavenet-B",
+            "3": "ru-RU-Wavenet-C",
+            "4": "ru-RU-Wavenet-D",
+            "5": "ru-RU-Wavenet-E",
+        }
+        response = Request.make(
+            "POST",
+            "https://cxl-services.appspot.com/proxy",
+            params={
+                "url": "https://texttospeech.googleapis.com/v1beta1/text:synthesize",
+                "token": self.token,
+            },
+            json={
+                "input": {"text": text},
+                "voice": {"languageCode": "ru-RU", "name": voices[voice]},
+                "audioConfig": {
+                    "audioEncoding": "LINEAR16",
+                    "pitch": pitch,
+                    "speakingRate": rate,
+                },
+            },
+        )
         if response.status_code == 200:
             if "audioContent" in response.json():
-                filename = "".join(choice(ascii_uppercase + ascii_letters + digits) for _ in range(15))
+                filename = "".join(
+                    choice(ascii_uppercase + ascii_letters + digits) for _ in range(15)
+                )
                 path = f"{path}/{filename}.{format}" if path else f"{filename}.{format}"
                 file = open(path, "wb")
                 file.write(b64decode(response.json()["audioContent"]))
@@ -74,9 +102,11 @@ class Token:
         :return: The token.
         """
         response = Request().make("GET", "https://cloud.google.com/text-to-speech")
-        recaptcha_response = ReCaptchaV2.ReCaptchaV2(rucaptcha_key=rucaptcha_key).captcha_handler(
-                                                     site_key="6LdBnhQUAAAAAMkYSqdAnkafemcA6JtM1N3hlgiL",
-                                                     page_url=response.url)
+        recaptcha_response = ReCaptchaV2.ReCaptchaV2(
+            rucaptcha_key=rucaptcha_key
+        ).captcha_handler(
+            site_key="6LdBnhQUAAAAAMkYSqdAnkafemcA6JtM1N3hlgiL", page_url=response.url
+        )
         if recaptcha_response["captchaSolve"]:
             return recaptcha_response["captchaSolve"]
         return None
