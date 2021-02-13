@@ -29,7 +29,7 @@ setup(
     author="Kirill Feschenko",
     author_email="swipduces@yandex.com",
     python_requires=">=3.7.0",
-    url="https://github.com/ruotvet/ruotvet/",
+    url="https://github.com/xcaq/voicy/",
     packages=find_packages(),
     install_requires=["requests", "python-rucaptcha", "pydantic"],
     include_package_data=True,
