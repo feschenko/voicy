@@ -2,6 +2,14 @@
 <h3>Wrapper for google cloud TTS.</h3>
 
 
+<h2>Installation:</h2>
+<h6>Download library using pip</h6>
+
+```bash
+$ pip3 install voicy
+```
+
+
 <h2>Getting the token:</h2>
 
 <p>For a request to the client need to provide a token. You can easily get it using Token object, or in a browser by yourself.</p>
