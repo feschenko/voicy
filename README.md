@@ -36,10 +36,8 @@ voice = Voice(token="token")
 
 print(
     voice.tts(
-        text="Вы используете библиотеку voicy. Поставьте звездочку, "
-              "если считаете ее полезной. Автор – Кирилл Фещенко",
-        voice="2",
-        format="wav"
+        text="You are using a voicy library. Please, give a star, if you like it.",
+        voice={"en-US": "en-US-Wavenet-A"}
     )
 )
 ```

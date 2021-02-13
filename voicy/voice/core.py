@@ -2,13 +2,19 @@ from string import ascii_uppercase, ascii_letters, digits
 from python_rucaptcha import ReCaptchaV2
 from pydantic import BaseModel
 from base64 import b64decode
+from typing import Optional
 from ..http import Request
 from random import choice
-from typing import Optional
 
 
 class MaxLengthError(Exception):
     """Throws when text length is more than 4600 characters."""
+
+    pass
+
+
+class VoiceModelError(Exception):
+    """Throws when the user provides non-correct voice arguments."""
 
     pass
 
@@ -35,18 +41,18 @@ class Voice:
         self.token = token
 
     def tts(
-        self,
-        text: str,
-        voice: str = "1",
-        rate: float = 1,
-        pitch: float = 0,
-        path: str = "",
-        format: str = "wav",
+            self,
+            text: str,
+            voice: dict,
+            rate: float = 1,
+            pitch: float = 0,
+            path: str = "",
+            format: str = "wav",
     ) -> File:
         """
         Does a http to the client with the token, that provided in init. After does TTS and returns the path to file.
-        :param text: Text with length no more than 4600 characters.
-        :param voice: One of the voices. Currently, available 5.
+        :param text: Text with length no more than 4600 characters. Supports multi-language, but with issues.
+        :param voice: Dictionary like {"en-US": "en-US-Wavenet-A"}. More about you can read in README.
         :param rate: Speed of voice speaking. By default, is 1.
         :param pitch: Pitch of the voice. By default, is 0.
         :param path: Saving path for the audio file. Empty for saving in the current path.
@@ -55,13 +61,6 @@ class Voice:
         """
         if len(text) > 4600:
             raise MaxLengthError("Max text length is 4600 characters.")
-        voices = {
-            "1": "ru-RU-Wavenet-A",
-            "2": "ru-RU-Wavenet-B",
-            "3": "ru-RU-Wavenet-C",
-            "4": "ru-RU-Wavenet-D",
-            "5": "ru-RU-Wavenet-E",
-        }
         response = Request.make(
             "POST",
             "https://cxl-services.appspot.com/proxy",
@@ -71,13 +70,13 @@ class Voice:
             },
             json={
                 "input": {"text": text},
-                "voice": {"languageCode": "ru-RU", "name": voices[voice]},
+                "voice": {"languageCode": list(voice.items())[0][0], "name": list(voice.items())[0][1]},
                 "audioConfig": {
                     "audioEncoding": "LINEAR16",
                     "pitch": pitch,
                     "speakingRate": rate,
                 },
-            },
+            }
         )
         if response.status_code == 200:
             if "audioContent" in response.json():
@@ -89,6 +88,8 @@ class Voice:
                 file.write(b64decode(response.json()["audioContent"]))
                 file.close()
                 return File(path=path, format=format)
+        elif response.status_code == 400:
+            raise VoiceModelError("Could not find the provided voice model. Please watch README.")
         elif response.status_code == 401:
             raise BadTokenError("Bad token. Generate a new one.")
 
