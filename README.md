@@ -1,6 +1,8 @@
 <h1>Voicy</h1>
-<h3>Free wrapper for cloud.google.com TTS.</h3>
+<h3>Wrapper for google cloud TTS.</h3>
 
+
+<h2>Getting the token:</h2>
 
 <p>For a request to the client need to provide a token. You can easily get it using Token object, or in a browser by yourself.</p>
 <p>Both options are described below:</p>
@@ -25,10 +27,32 @@
 
 <details>
   <summary>Browser option</summary>
-    <p>Sorry, currently this part is not written, please come back later or make a pull request with the guide.</p>
+    <ol>
+        <li>By first, go to <a href="https://cloud.google.com/text-to-speech">cloud.google.com/text-to-speech</a>.</li>
+        <li>
+            After that scroll down to the demo part.
+            <br>
+            <img src=".github/images/Recaptcha.png" alt="Recaptcha">
+        </li>
+        <li>Solve the captcha.</li>
+        <li>
+            After, open the developer console and go to the "Network" section. In the "Name"
+            section search for proxy?url=https://texttospeech.googleapis.com ...
+            <br>
+            <img src=".github/images/DeveloperConsole.png" alt="The developer console">
+            <br>
+            Scroll to the "Query string parameters". And here is your token.
+        </li>
+    </ol>
 </details>
 
-## Usage example:
+
+<h2>Usage example:</h2>
+
+For using TTS you need to provide a voice setting. In Voicy you need to provide a dictionary, with a key, that is your 
+language code and voice model. Format to both you can find in 
+<a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>. Example <code>{"en-US": "en-US-Wavenet-A"}</code>. 
+
 ```python3
 from voicy import Voice
 
@@ -36,8 +60,8 @@ voice = Voice(token="token")
 
 print(
     voice.tts(
-        text="You are using a voicy library. Please, give a star, if you like it.",
-        voice={"en-US": "en-US-Wavenet-A"}
+        text="You are using a Voicy library. Please, give a star, if you like it.",
+        voice={"en-US": "en-US-Wavenet-A"},
     )
 )
 ```
