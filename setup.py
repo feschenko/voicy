@@ -46,6 +46,6 @@ setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries",
-        "Typing :: Typed"
-    ]
+        "Typing :: Typed",
+    ],
 )

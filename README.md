@@ -1,12 +1,12 @@
 <h1>Voicy</h1>
-<h4>Wrapper for free use Google cloud TTS.</h4>
+<h4>Wrapper for free use Google cloud TTS and STT.</h4>
 
 
 <h2>Installation:</h2>
 <h6>Download library using pip</h6>
 
 ```bash
-$ pip3 install voicy
+$ pip3 install voicy -U
 ```
 
 
@@ -58,10 +58,18 @@ $ pip3 install voicy
 <h2>Usage example:</h2>
 
 <p>
-For using TTS you need to provide a voice setting. In Voicy you need to provide a dictionary, with a key, that is your 
-language code and voice model. Format to both you can find in
-<a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>
-<p>. Example <code>{"en-US": "en-US-Wavenet-A"}</code>. 
+For using TTS you need to provide a dictionary with a key, that is your language code and value – voice model. 
+Format to both you can find in <a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>.
+</p>
+
+<p>
+For using STT you only need to provide a language code. This value is the language of your audio file.
+Format for the language code you can find in <a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>.
+</p>
+
+<br>
+
+<h5>Simple TTS example:</h5>
 
 ```python3
 from voicy import Voicy
@@ -75,3 +83,27 @@ print(
     )
 )
 ```
+
+<h6>This example will return <code>File(path="84PFetz5IJdT4Je.wav", format="wav")</code></h6>
+
+
+<h5>Simple STT example:</h5>
+
+```python3
+from voicy import Voicy
+
+voicy = Voicy(token="token")
+
+print(
+    voicy.stt(
+        file="84PFetz5IJdT4Je.wav",
+        language_code="en-US",
+    )
+)
+```
+
+<h6> This example will return <code>Transcript(text="You are using a Voicy library. Please, give a star, if you like it.", confidence=0.93750596, path="84PFetz5IJdT4Je.wav", format="wav")</code>
+</h6>
+
+<h2>🤝 Contributing</h2>
+<a href="https://github.com/xcaq/voicy/graphs/contributors" align=center>Feel free to contribute.</a>

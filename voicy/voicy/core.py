@@ -1,7 +1,8 @@
 from string import ascii_uppercase, ascii_letters, digits
 from python_rucaptcha import ReCaptchaV2
+from base64 import b64decode, b64encode
+from pydub.utils import mediainfo
 from pydantic import BaseModel
-from base64 import b64decode
 from typing import Optional
 from ..http import Request
 from random import choice
@@ -25,9 +26,25 @@ class BadTokenError(Exception):
     pass
 
 
+class BadLanguageCodeError(Exception):
+    """Throws when the client does not accept provided language code."""
+
+    pass
+
+
 class File(BaseModel):
     """This object represents an audio file. Contains a path and file format."""
 
+    path: str
+    format: str
+
+
+class Transcript(BaseModel):
+    """This object represents a transcript of an audio file.
+    Contains text, transcript confidence, and a path to an audio file with its format."""
+
+    text: str
+    confidence: float
     path: str
     format: str
 
@@ -41,16 +58,16 @@ class Voicy:
         self.token = token
 
     def tts(
-            self,
-            text: str,
-            voice: dict,
-            rate: float = 1,
-            pitch: float = 0,
-            path: str = "",
-            format: str = "wav",
+        self,
+        text: str,
+        voice: dict,
+        rate: float = 1,
+        pitch: float = 0,
+        path: str = "",
+        format: str = "wav",
     ) -> File:
         """
-        Does a http to the client with the token, that provided in init. After does TTS and returns the path to file.
+        Does a request to the client with the token, that provided in init. After does TTS and returns the File object.
         :param text: Text with length no more than 4600 characters. Supports multi-language, but with issues.
         :param voice: Dictionary like {"en-US": "en-US-Wavenet-A"}. More about you can read in README.
         :param rate: Speed of voicy speaking. By default, is 1.
@@ -70,13 +87,16 @@ class Voicy:
             },
             json={
                 "input": {"text": text},
-                "voice": {"languageCode": list(voice.items())[0][0], "name": list(voice.items())[0][1]},
+                "voice": {
+                    "languageCode": list(voice.items())[0][0],
+                    "name": list(voice.items())[0][1],
+                },
                 "audioConfig": {
                     "audioEncoding": "LINEAR16",
                     "pitch": pitch,
                     "speakingRate": rate,
                 },
-            }
+            },
         )
         if response.status_code == 200:
             if "audioContent" in response.json():
@@ -89,7 +109,51 @@ class Voicy:
                 file.close()
                 return File(path=path, format=format)
         elif response.status_code == 400:
-            raise VoiceModelError("Could not find the provided voice model. Please watch README.")
+            raise VoiceModelError(
+                "Could not find the provided voice model. Please watch README."
+            )
+        elif response.status_code == 401:
+            raise BadTokenError("Bad token. Generate a new one.")
+
+    def stt(self, file: str, language_code: str) -> Transcript:
+        """
+        Does a request to the client with the token, that provided in init. After does STT and returns the Transcript object.
+        :param file: Full path for an audio file.
+        :param language_code: String like "en-US". More about you can read in README.
+        :return: Transcript object.
+        """
+        response = self.request.make(
+            "POST",
+            "https://cxl-services.appspot.com/proxy",
+            params={
+                "url": "https://speech.googleapis.com/v1p1beta1/speech:recognize",
+                "token": self.token,
+            },
+            json={
+                "audio": {
+                    "content": b64encode(open(file, "rb").read()).decode("utf-8")
+                },
+                "config": {
+                    "enableAutomaticPunctuation": "true",
+                    "encoding": "LINEAR16",
+                    "languageCode": language_code,
+                    "model": "default",
+                    "sampleRateHertz": mediainfo(file)["sample_rate"],
+                },
+            },
+        )
+        if response.status_code == 200:
+            if "results" in response.json():
+                return Transcript(
+                    text=response.json()["results"][0]["alternatives"][0]["transcript"],
+                    confidence=response.json()["results"][0]["alternatives"][0][
+                        "confidence"
+                    ],
+                    path=file,
+                    format=file.split(".")[-1],
+                )
+        elif response.status_code == 400:
+            raise BadLanguageCodeError("Incorrect language code. Please watch README.")
         elif response.status_code == 401:
             raise BadTokenError("Bad token. Generate a new one.")
 
@@ -98,7 +162,7 @@ class Token:
     @staticmethod
     def get_token(rucaptcha_key: str) -> Optional[str]:
         """
-        Does a http to the client, solve a captcha and return a token.
+        Does a request to the client, solve a captcha and return a token.
         :param rucaptcha_key: Rucaptcha API key.
         :return: The token.
         """
