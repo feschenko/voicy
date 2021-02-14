@@ -20,7 +20,7 @@ def get_version():
 
 
 setup(
-    name="Voicy",
+    name="voicy",
     version=get_version(),
     description="Wrapper for google cloud TTS.",
     long_description=long_description,

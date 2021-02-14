@@ -14,7 +14,7 @@ class MaxLengthError(Exception):
 
 
 class VoiceModelError(Exception):
-    """Throws when the user provides non-correct voice arguments."""
+    """Throws when the user provides non-correct voicy arguments."""
 
     pass
 
@@ -32,7 +32,7 @@ class File(BaseModel):
     format: str
 
 
-class Voice:
+class Voicy:
     def __init__(self, token: str):
         """
         :param token: The token for the client.
@@ -53,8 +53,8 @@ class Voice:
         Does a http to the client with the token, that provided in init. After does TTS and returns the path to file.
         :param text: Text with length no more than 4600 characters. Supports multi-language, but with issues.
         :param voice: Dictionary like {"en-US": "en-US-Wavenet-A"}. More about you can read in README.
-        :param rate: Speed of voice speaking. By default, is 1.
-        :param pitch: Pitch of the voice. By default, is 0.
+        :param rate: Speed of voicy speaking. By default, is 1.
+        :param pitch: Pitch of the voicy. By default, is 0.
         :param path: Saving path for the audio file. Empty for saving in the current path.
         :param format: Format for the audio file. By default, is wav.
         :return: File object.
@@ -70,7 +70,7 @@ class Voice:
             },
             json={
                 "input": {"text": text},
-                "voice": {"languageCode": list(voice.items())[0][0], "name": list(voice.items())[0][1]},
+                "voicy": {"languageCode": list(voice.items())[0][0], "name": list(voice.items())[0][1]},
                 "audioConfig": {
                     "audioEncoding": "LINEAR16",
                     "pitch": pitch,
@@ -89,7 +89,7 @@ class Voice:
                 file.close()
                 return File(path=path, format=format)
         elif response.status_code == 400:
-            raise VoiceModelError("Could not find the provided voice model. Please watch README.")
+            raise VoiceModelError("Could not find the provided voicy model. Please watch README.")
         elif response.status_code == 401:
             raise BadTokenError("Bad token. Generate a new one.")
 

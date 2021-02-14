@@ -1,5 +1,5 @@
 <h1>Voicy</h1>
-<h3>Wrapper for google cloud TTS.</h3>
+<h3>Wrapper for free use Google cloud TTS.</h3>
 
 
 <h2>Installation:</h2>
@@ -62,12 +62,12 @@ language code and voice model. Format to both you can find in
 <a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>. Example <code>{"en-US": "en-US-Wavenet-A"}</code>. 
 
 ```python3
-from voicy import Voice
+from voicy import Voicy
 
-voice = Voice(token="token")
+voicy = Voicy(token="token")
 
 print(
-    voice.tts(
+    voicy.tts(
         text="You are using a Voicy library. Please, give a star, if you like it.",
         voice={"en-US": "en-US-Wavenet-A"},
     )
