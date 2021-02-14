@@ -1,3 +1,3 @@
-from .voice.core import Voice, Token
+from .voice import Voice, Token
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
