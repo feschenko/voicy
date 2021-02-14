@@ -1,5 +1,5 @@
 <h1>Voicy</h1>
-<h3>Wrapper for free use Google cloud TTS.</h3>
+<h4>Wrapper for free use Google cloud TTS.</h4>
 
 
 <h2>Installation:</h2>

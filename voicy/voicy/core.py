@@ -78,7 +78,6 @@ class Voicy:
                 },
             }
         )
-        print(response.text)
         if response.status_code == 200:
             if "audioContent" in response.json():
                 filename = "".join(
