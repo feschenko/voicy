@@ -70,7 +70,7 @@ class Voicy:
             },
             json={
                 "input": {"text": text},
-                "voicy": {"languageCode": list(voice.items())[0][0], "name": list(voice.items())[0][1]},
+                "voice": {"languageCode": list(voice.items())[0][0], "name": list(voice.items())[0][1]},
                 "audioConfig": {
                     "audioEncoding": "LINEAR16",
                     "pitch": pitch,
@@ -78,6 +78,7 @@ class Voicy:
                 },
             }
         )
+        print(response.text)
         if response.status_code == 200:
             if "audioContent" in response.json():
                 filename = "".join(
@@ -89,7 +90,7 @@ class Voicy:
                 file.close()
                 return File(path=path, format=format)
         elif response.status_code == 400:
-            raise VoiceModelError("Could not find the provided voicy model. Please watch README.")
+            raise VoiceModelError("Could not find the provided voice model. Please watch README.")
         elif response.status_code == 401:
             raise BadTokenError("Bad token. Generate a new one.")
 

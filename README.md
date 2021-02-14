@@ -44,8 +44,8 @@ $ pip3 install voicy
         </li>
         <li>Solve the captcha.</li>
         <li>
-            After, open the developer console and go to the "Network" section. In the "Name"
-            section search for proxy?url=https://texttospeech.googleapis.com ...
+            After, open the developer console and go to the "Network" section. In column "Name" search for 
+            proxy?url=https://texttospeech.googleapis.com ...
             <br>
             <img src=".github/images/DeveloperConsole.png" alt="The developer console">
             <br>
@@ -57,9 +57,11 @@ $ pip3 install voicy
 
 <h2>Usage example:</h2>
 
+<p>
 For using TTS you need to provide a voice setting. In Voicy you need to provide a dictionary, with a key, that is your 
-language code and voice model. Format to both you can find in 
-<a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>. Example <code>{"en-US": "en-US-Wavenet-A"}</code>. 
+language code and voice model. Format to both you can find in
+<a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>
+<p>. Example <code>{"en-US": "en-US-Wavenet-A"}</code>. 
 
 ```python3
 from voicy import Voicy

@@ -22,7 +22,7 @@ def get_version():
 setup(
     name="voicy",
     version=get_version(),
-    description="Wrapper for google cloud TTS.",
+    description="Wrapper for free use Google cloud TTS.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords="wrapper text-to-speech google-cloud tts tts-engines wrapper-library tts-api google-cloud-text-to-speech",
