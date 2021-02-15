@@ -1,3 +1,4 @@
 pydantic==1.7.3
 python-rucaptcha==3.0.1
 requests==2.25.1
+pydub==0.24.1
