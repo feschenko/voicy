@@ -8,7 +8,7 @@ try:
     with open("README.md", "r", encoding="utf-8") as readme:
         long_description = readme.read()
 except:
-    long_description = "Wrapper for google cloud TTS."
+    long_description = "Wrapper for free use Google cloud TTS and STT."
 
 
 def get_version():
@@ -25,7 +25,8 @@ setup(
     description="Wrapper for free use Google cloud TTS.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    keywords="wrapper text-to-speech google-cloud tts tts-engines wrapper-library tts-api google-cloud-text-to-speech",
+    keywords="wrapper text-to-speech google-cloud tts stt tts-engines wrapper-library tts-api "
+    "google-cloud-text-to-speech google-cloud-tts stt-engines stt-api google-cloud-speech-to-text",
     author="Kirill Feschenko",
     author_email="swipduces@yandex.com",
     python_requires=">=3.7.0",

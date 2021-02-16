@@ -1,3 +1,3 @@
-from .voicy import Voicy, Token, BadTokenError, VoiceModelError, MaxLengthError, BadLanguageCodeError, File, Transcript
+from .core import Voicy, Token
 
-__version__ = "0.2.0.2"
+__version__ = "0.3.0"

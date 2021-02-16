@@ -1,58 +1,24 @@
+from .exceptions import (
+    BadLanguageCodeError,
+    BadTokenError,
+    TranslateTTSError,
+    MaxLengthError,
+    VoiceModelError,
+)
 from string import ascii_uppercase, ascii_letters, digits
 from python_rucaptcha import ReCaptchaV2
 from base64 import b64decode, b64encode
+from .types import File, Transcript
 from pydub.utils import mediainfo
-from pydantic import BaseModel
 from typing import Optional
-from ..http import Request
+from voicy.http import Request
 from random import choice
 
 
-class MaxLengthError(Exception):
-    """Throws when text length is more than 4600 characters."""
-
-    pass
-
-
-class VoiceModelError(Exception):
-    """Throws when the user provides non-correct voicy arguments."""
-
-    pass
-
-
-class BadTokenError(Exception):
-    """Throws when the client does not accept a token."""
-
-    pass
-
-
-class BadLanguageCodeError(Exception):
-    """Throws when the client does not accept provided language code."""
-
-    pass
-
-
-class File(BaseModel):
-    """This object represents an audio file. Contains a path and file format."""
-
-    path: str
-    format: str
-
-
-class Transcript(BaseModel):
-    """This object represents a transcript of an audio file.
-    Contains text, transcript confidence, and a path to an audio file with its format."""
-
-    text: str
-    confidence: float
-    path: str
-    format: str
-
-
 class Voicy:
-    def __init__(self, token: str):
+    def __init__(self, token: Optional[str] = None):
         """
-        :param token: The token for the client.
+        :param token: The token for the client. Provide it if you need to use TTS or SST.
         """
         self.request = Request()
         self.token = token
@@ -63,21 +29,25 @@ class Voicy:
         voice: dict,
         rate: float = 1,
         pitch: float = 0,
+        ssml: bool = False,
         path: str = "",
         format: str = "wav",
     ) -> File:
         """
-        Does a request to the client with the token, that provided in init. After does TTS and returns the File object.
+        Does a request to the client with the token, that provided in init. Returns the File object.
         :param text: Text with length no more than 4600 characters. Supports multi-language, but with issues.
         :param voice: Dictionary like {"en-US": "en-US-Wavenet-A"}. More about you can read in README.
-        :param rate: Speed of voicy speaking. By default, is 1.
-        :param pitch: Pitch of the voicy. By default, is 0.
+        :param rate: Speed of voice speaking. By default, is 1.
+        :param pitch: Pitch of the voice. By default, is 0.
+        :param ssml: Google SSML support.
         :param path: Saving path for the audio file. Empty for saving in the current path.
         :param format: Format for the audio file. By default, is wav.
         :return: File object.
         """
         if len(text) > 4600:
             raise MaxLengthError("Max text length is 4600 characters.")
+        if not self.token:
+            raise BadTokenError("The token is not provided.")
         response = Request.make(
             "POST",
             "https://cxl-services.appspot.com/proxy",
@@ -86,7 +56,7 @@ class Voicy:
                 "token": self.token,
             },
             json={
-                "input": {"text": text},
+                "input": {"ssml" if ssml else "text": text},
                 "voice": {
                     "languageCode": list(voice.items())[0][0],
                     "name": list(voice.items())[0][1],
@@ -115,13 +85,49 @@ class Voicy:
         elif response.status_code == 401:
             raise BadTokenError("Bad token. Generate a new one.")
 
-    def stt(self, file: str, language_code: str) -> Transcript:
+    def translate_tts(
+        self,
+        text: str,
+        language_code: str,
+        path: str = "",
+        format: str = "wav",
+    ) -> File:
         """
-        Does a request to the client with the token, that provided in init. After does STT and returns the Transcript object.
+        Does a request to the translate client without a token. Returns the File object.
+        :param text: Text with length no more than 4600 characters. Supports multi-language, but with issues.
+        :param language_code: String like "en-US". More about you can read in README.
+        :param path: Saving path for the audio file. Empty for saving in the current path.
+        :param format: Format for the audio file. By default, is wav.
+        :return: File object.
+        """
+        if len(text) > 200:
+            raise MaxLengthError("Max text length is 200 characters.")
+        response = self.request.make(
+            "GET",
+            "https://translate.google.com/translate_tts",
+            params={"ie": "utf-8", "tl": language_code, "client": "tw-ob", "q": text},
+        )
+        if response.status_code == 200:
+            filename = "".join(
+                choice(ascii_uppercase + ascii_letters + digits) for _ in range(15)
+            )
+            path = f"{path}/{filename}.{format}" if path else f"{filename}.{format}"
+            file = open(path, "wb")
+            file.write(response.content)
+            file.close()
+            return File(path=path, format=format)
+        elif response.status_code == 404:
+            raise TranslateTTSError("Text is empty or provided a wrong language code.")
+
+    def stt(self, file: str, language_code: str) -> Optional[Transcript]:
+        """
+        Does a request to the client with the token, that provided in init. Returns the Transcript object.
         :param file: Full path for an audio file.
         :param language_code: String like "en-US". More about you can read in README.
         :return: Transcript object.
         """
+        if not self.token:
+            raise BadTokenError("The token is not provided.")
         response = self.request.make(
             "POST",
             "https://cxl-services.appspot.com/proxy",
@@ -149,9 +155,9 @@ class Voicy:
                     confidence=response.json()["results"][0]["alternatives"][0][
                         "confidence"
                     ],
-                    path=file,
-                    format=file.split(".")[-1],
+                    file=File(path=file, format=file.split(".")[-1]),
                 )
+            return None
         elif response.status_code == 400:
             raise BadLanguageCodeError("Incorrect language code. Please watch README.")
         elif response.status_code == 401:

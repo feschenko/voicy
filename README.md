@@ -18,7 +18,7 @@ $ pip3 install voicy -U
 <details>
   <summary>Automated option</summary>
     <ol>
-        <li>By first, you need to get API token in <a href="http://rucaptcha.com/">rucaptcha</a>.</li>
+        <li>By first, you need to get API key in <a href="http://rucaptcha.com/">rucaptcha</a>.</li>
         <li>
             After that import a Token object from voicy:
             <br>
@@ -27,7 +27,7 @@ $ pip3 install voicy -U
         <li>
             Then provide the API key to the get_token function:
             <br>
-            <code>Token.get_token(rucaptcha_key="Token, that you got in the rucaptcha account.")</code>
+            <code>Token.get_token(rucaptcha_key="Key, that you got in the rucaptcha account.")</code>
         </li>
         <li>If you do all alright you would get long string, that you should provide to Voice object in init.</li>
     </ol>
@@ -62,13 +62,6 @@ For using TTS you need to provide a dictionary with a key, that is your language
 Format to both you can find in <a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>.
 </p>
 
-<p>
-For using STT you only need to provide a language code. This value is the language of your audio file.
-Format for the language code you can find in <a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>.
-</p>
-
-<br>
-
 <h5>Simple TTS example:</h5>
 
 ```python3
@@ -86,8 +79,14 @@ print(
 
 <h6>This example will return <code>File(path="84PFetz5IJdT4Je.wav", format="wav")</code></h6>
 
+<br> 
 
 <h5>Simple STT example:</h5>
+
+<p>
+For using STT you only need to provide a language code. This value is the language of your audio file.
+Format for the language code you can find in <a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>.
+</p>
 
 ```python3
 from voicy import Voicy
@@ -104,6 +103,30 @@ print(
 
 <h6> This example will return <code>Transcript(text="You are using a Voicy library. Please, give a star, if you like it.", confidence=0.93750596, path="84PFetz5IJdT4Je.wav", format="wav")</code>
 </h6>
+
+<br>
+
+<details>
+  <summary>Google Translate TTS</summary>
+    <p>
+        If you don't want to get a token, you can use TTS from Google Translate. You don't need to provide anything, 
+        but the max text length for one request is 200 characters, and you can use only one voice model.
+    </p>
+
+    from voicy import Voicy
+    
+    voicy = Voicy()
+    
+    print(
+        voicy.translate_stt(
+            text="You are using a Voicy library. Please, give a star, if you like it.",
+            language_code="en-US",
+        )
+    )
+    
+<h6>This example will return <code>File(path="ILSp8RHEMFyNW9M.wav", format="wav")</code></h6>
+</details>
+
 
 <h2>🤝 Contributing</h2>
 <a href="https://github.com/xcaq/voicy/graphs/contributors" align=center>Feel free to contribute.</a>
