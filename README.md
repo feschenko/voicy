@@ -1,5 +1,5 @@
 <h1>Voicy</h1>
-<h4>Wrapper for free use Google cloud TTS and STT.</h4>
+<h4>Wrapper for free use Google Сloud TTS and STT.</h4>
 
 
 <h2>Installation:</h2>
@@ -12,7 +12,10 @@ $ pip3 install voicy -U
 
 <h2>Getting the token:</h2>
 
-<p>For a request to the client need to provide a token. You can easily get it using Token object, or in a browser by yourself.</p>
+<p>
+    For a request to the Google Cloud client need to provide a token. You can easily get it using Token object,
+    or in a browser by yourself.
+</p>
 <p>Both options are described below:</p>
 
 <details>
@@ -104,28 +107,28 @@ print(
 <h6> This example will return <code>Transcript(text="You are using a Voicy library. Please, give a star, if you like it.", confidence=0.93750596, path="84PFetz5IJdT4Je.wav", format="wav")</code>
 </h6>
 
-<br>
+<br> 
 
-<details>
-  <summary>Google Translate TTS</summary>
-    <p>
-        If you don't want to get a token, you can use TTS from Google Translate. You don't need to provide anything, 
-        but the max text length for one request is 200 characters, and you can use only one voice model.
-    </p>
+<h5>Google Translate TTS example:</h5>
 
-    from voicy import Voicy
-    
-    voicy = Voicy()
-    
-    print(
-        voicy.translate_stt(
-            text="You are using a Voicy library. Please, give a star, if you like it.",
-            language_code="en-US",
-        )
+<p>
+    If you don't want to get the token, you can use TTS from Google Translate. You don't need to provide anything, 
+    but the max text length for one request is 200 characters, and you can use only one voice model.
+</p>
+
+```python3
+from voicy import Voicy
+
+voicy = Voicy()
+
+print(
+    voicy.translate_tts(
+        text="You are using a Voicy library. Please, give a star, if you like it.",
+        language_code="en-US",
     )
-    
+)
+```   
 <h6>This example will return <code>File(path="ILSp8RHEMFyNW9M.wav", format="wav")</code></h6>
-</details>
 
 
 <h2>🤝 Contributing</h2>
