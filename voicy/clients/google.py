@@ -1,4 +1,4 @@
-from .exceptions import (
+from voicy.exceptions import (
     BadLanguageCodeError,
     BadTokenError,
     TranslateTTSError,
@@ -8,14 +8,14 @@ from .exceptions import (
 from string import ascii_uppercase, ascii_letters, digits
 from python_rucaptcha import ReCaptchaV2
 from base64 import b64decode, b64encode
-from .types import File, Transcript
+from voicy.types import File, Transcript
 from pydub.utils import mediainfo
 from typing import Optional
 from voicy.http import Request
 from random import choice
 
 
-class Voicy:
+class Google:
     def __init__(self, token: Optional[str] = None):
         """
         :param token: The token for the client. Provide it if you need to use TTS or SST.
@@ -164,7 +164,7 @@ class Voicy:
             raise BadTokenError("Bad token. Generate a new one.")
 
 
-class Token:
+class GoogleToken:
     @staticmethod
     def get_token(rucaptcha_key: str) -> Optional[str]:
         """

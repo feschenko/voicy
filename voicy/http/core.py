@@ -2,8 +2,11 @@ import requests
 
 
 class Request:
-    @staticmethod
+    def __init__(self, session: requests.Session = None):
+        self.session = session or requests.session()
+
     def make(
+        self,
         method: str,
         url: str,
         data: dict = None,
@@ -11,6 +14,21 @@ class Request:
         json: dict = None,
         headers: dict = None,
     ) -> requests.Response:
-        return requests.request(
-            method=method, url=url, data=data, params=params, json=json
-        )
+        if self.session:
+            return self.session.request(
+                method=method,
+                url=url,
+                data=data,
+                params=params,
+                json=json,
+                headers=headers,
+            )
+        else:
+            return requests.request(
+                method=method,
+                url=url,
+                data=data,
+                params=params,
+                json=json,
+                headers=headers,
+            )

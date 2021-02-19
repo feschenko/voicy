@@ -1,5 +1,5 @@
 <h1>Voicy</h1>
-<h4>Wrapper for free use Google Сloud TTS and STT.</h4>
+<h4>Wrapper for free use TTS & STT services.</h4>
 
 
 <h2>Installation:</h2>
@@ -10,10 +10,12 @@ $ pip3 install voicy -U
 ```
 
 
-<h2>Getting the token:</h2>
+<h2>Usage example:</h2>
+
+<h3>Google Cloud</h3>
 
 <p>
-    For a request to the Google Cloud client need to provide a token. You can easily get it using Token object,
+    For a request to the Google Cloud client, you need to provide a token. You can easily get it using GoogleToken object,
     or in a browser by yourself.
 </p>
 <p>Both options are described below:</p>
@@ -23,16 +25,16 @@ $ pip3 install voicy -U
     <ol>
         <li>By first, you need to get API key in <a href="http://rucaptcha.com/">rucaptcha</a>.</li>
         <li>
-            After that import a Token object from voicy:
+            After that import a GoogleToken object from voicy:
             <br>
-            <code>from voicy import Token</code>
+            <code>from voicy import GoogleToken</code>
         </li>
         <li>
             Then provide the API key to the get_token function:
             <br>
-            <code>Token.get_token(rucaptcha_key="Key, that you got in the rucaptcha account.")</code>
+            <code>GoogleToken.get_token(rucaptcha_key="Key, that you got in the rucaptcha account.")</code>
         </li>
-        <li>If you do all alright you would get long string, that you should provide to Voice object in init.</li>
+        <li>If you do all alright you would get long string, that you should provide to Google object in init.</li>
     </ol>
 </details>
 
@@ -52,28 +54,27 @@ $ pip3 install voicy -U
             <br>
             <img src=".github/images/DeveloperConsole.png" alt="The developer console">
             <br>
-            Scroll to the "Query string parameters". And here is your token.
+            Scroll to the "Query string parameters". That long string is your token. Provide it to Google object in init.  
         </li>
     </ol>
 </details>
 
 
-<h2>Usage example:</h2>
-
 <p>
-For using TTS you need to provide a dictionary with a key, that is your language code and value – voice model. 
-Format to both you can find in <a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>.
+For using TTS you need to provide a dictionary where the key is your language code and the value is your voice model.
+Format to both you can find in <a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>. Also, 
+if you don't want to get a token you can use a TTS from Google Translate.
 </p>
 
 <h5>Simple TTS example:</h5>
 
 ```python3
-from voicy import Voicy
+from voicy import Google
 
-voicy = Voicy(token="token")
+google = Google(token="token")
 
 print(
-    voicy.tts(
+    google.tts(
         text="You are using a Voicy library. Please, give a star, if you like it.",
         voice={"en-US": "en-US-Wavenet-A"},
     )
@@ -87,17 +88,17 @@ print(
 <h5>Simple STT example:</h5>
 
 <p>
-For using STT you only need to provide a language code. This value is the language of your audio file.
-Format for the language code you can find in <a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>.
+For using STT you only need to provide a language code.
+Format for it you can find in <a href="https://cloud.google.com/text-to-speech/docs/voices">docs</a>.
 </p>
 
 ```python3
-from voicy import Voicy
+from voicy import Google
 
-voicy = Voicy(token="token")
+google = Google(token="token")
 
 print(
-    voicy.stt(
+    google.stt(
         file="84PFetz5IJdT4Je.wav",
         language_code="en-US",
     )
@@ -109,27 +110,40 @@ print(
 
 <br> 
 
-<h5>Google Translate TTS example:</h5>
+<h3>Yandex Cloud:</h3>
 
-<p>
-    If you don't want to get the token, you can use TTS from Google Translate. You don't need to provide anything, 
-    but the max text length for one request is 200 characters, and you can use only one voice model.
-</p>
+<p>For using Yandex TTS you don't need to provide any token. Just pass text, language code and voice model:</p>
 
 ```python3
-from voicy import Voicy
+from voicy import Yandex
 
-voicy = Voicy()
+yandex = Yandex()
 
 print(
-    voicy.translate_tts(
+    yandex.tts(
         text="You are using a Voicy library. Please, give a star, if you like it.",
         language_code="en-US",
+        voice="ermil",
     )
 )
-```   
-<h6>This example will return <code>File(path="ILSp8RHEMFyNW9M.wav", format="wav")</code></h6>
+```
+
+<h6>This example will return <code>File(path="SUypGpSLTvGKTTy.wav", format="wav")</code></h6>
 
 
-<h2>🤝 Contributing</h2>
-<a href="https://github.com/xcaq/voicy/graphs/contributors" align=center>Feel free to contribute.</a>
+<h2>License</h2>
+<p>The library is under the GNU LGPLv3 license.</p>
+<p>
+    BE AWARE THAT THE AUTHORS ARE UNDER NO CIRCUMSTANCES RESPONSIBLE FOR CONSEQUENCES OF USE AND 
+    ANY INTERACTION WITH THE LIBRARY. NOT LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+    IN THE SOFTWARE. THE CODE IS PROVIDED FOR EDUCATION PURPOSES ONLY.
+</p>
+<p>
+    Read the <a href="https://github.com/xcaq/voicy/blob/master/LICENSE">LICENSE</a> for more information.
+</p>
+
+
+<h2>Contributing</h2>
+
+<a href="https://github.com/xcaq/voicy/graphs/contributors">Feel free to contribute.</a>
