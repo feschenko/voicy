@@ -48,7 +48,7 @@ class Google:
             raise MaxLengthError("Max text length is 4600 characters.")
         if not self.token:
             raise BadTokenError("The token is not provided.")
-        response = Request.make(
+        response = self.request.make(
             "POST",
             "https://cxl-services.appspot.com/proxy",
             params={
