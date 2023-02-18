@@ -25,7 +25,7 @@ def get_version():
 
 
 def load_requirements(filename: str) -> list:
-    return [str(ir.req) for ir in parse_requirements(filename, session="sessions")]        
+    return [str(req) for req in parse_requirements(filename, session="sessions")]        
 
 setup(
     name="voicy",
