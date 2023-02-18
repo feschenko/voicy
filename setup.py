@@ -2,6 +2,11 @@ from setuptools import setup, find_packages
 import pathlib
 import re
 
+try:
+    from pip._internal.req import parse_requirements
+except ImportError:
+    from pip.req import parse_requirements
+
 WORK_DIR = pathlib.Path(__file__).parent
 
 try:
@@ -19,6 +24,9 @@ def get_version():
         raise RuntimeError("Unable to determine version.")
 
 
+def load_requirements(filename: str) -> list:
+    return [str(ir.req) for ir in parse_requirements(filename, session="sessions")]        
+
 setup(
     name="voicy",
     version=get_version(),
@@ -32,7 +40,7 @@ setup(
     python_requires=">=3.7.0",
     url="https://github.com/xcaq/voicy/",
     packages=find_packages(),
-    install_requires=["requests", "python-rucaptcha", "pydantic", "pydub"],
+    install_requires=load_requirements("requirements.txt"),
     include_package_data=True,
     license="GNU LGPLv3",
     classifiers=[
